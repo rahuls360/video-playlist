@@ -66,7 +66,7 @@ app.post("/video/new", (req, res) => {
 //Delete Video
 app.delete("/video/:id", (req, res) => {
   let id = req.params.id;
-  Video.remove({
+  Video.deleteOne({
       _id: id
     },
     (err) => {
