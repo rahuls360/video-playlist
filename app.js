@@ -19,13 +19,27 @@ app.get("/", (req, res) => {
   res.send("Working!");
 });
 
-//Read Video
-app.get("/video", (req, res) => {
+//Read All Videos
+app.get("/videos", (req, res) => {
   Video.find({}, (err, videos) => {
     if (err) {
       console.log(err);
     } else {
       res.json(videos);
+    }
+  });
+});
+
+//Read Single Video
+app.get("/video/:id", (req, res) => {
+  let id = req.params.id;
+  Video.find({
+    _id: id
+  }, (err, video) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json(video);
     }
   });
 });
@@ -44,9 +58,27 @@ app.post("/video/new", (req, res) => {
       console.log(err);
     } else {
       console.log("Video Added");
+      res.send("Video Added");
     }
   })
 })
+
+//Delete Video
+app.delete("/video/:id", (req, res) => {
+  let id = req.params.id;
+  Video.remove({
+      _id: id
+    },
+    (err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Delete Successful");
+        res.send("Video Deleted");
+      }
+    }
+  )
+});
 
 //Start Server
 app.listen(3000, () => {
