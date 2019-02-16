@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const Video = require("./models/video");
+const Playlist = require("./models/playlist");
 
 //connect to db
 mongoose.connect(process.env.MONGO_DB, {
@@ -88,6 +89,70 @@ app.delete("/video/:id", (req, res) => {
       } else {
         console.log("Delete Successful");
         res.send("Video Deleted");
+      }
+    }
+  );
+});
+
+//Read All Playlists
+app.get("/playlists", (req, res) => {
+  Playlist.find({}, (err, playlists) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json(playlists);
+    }
+  });
+});
+
+//Read Single playlist
+app.get("/playlist/:id", (req, res) => {
+  let id = req.params.id;
+  Playlist.find({
+      _id: id
+    },
+    (err, playlist) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json(playlist);
+      }
+    }
+  );
+});
+
+//Create Playlist
+app.post("/playlist/new", (req, res) => {
+  let playlist = req.body;
+
+  Playlist.create({
+      title: playlist.title,
+      videos: playlist.videos,
+      URL: playlist.URL
+    },
+    function (err, createdPlaylist) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Playlist created");
+        res.send("Playlist created");
+      }
+    }
+  );
+});
+
+//Delete Playlist
+app.delete("/playlist/:id", (req, res) => {
+  let id = req.params.id;
+  Playlist.deleteOne({
+      _id: id
+    },
+    err => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Delete Successful");
+        res.send("Playlist Deleted");
       }
     }
   );
