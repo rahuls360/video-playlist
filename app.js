@@ -43,17 +43,13 @@ app.get("/videos", (req, res) => {
 //Read Single Video
 app.get("/video/:id", (req, res) => {
   let id = req.params.id;
-  Video.find({
-      _id: id
-    },
-    (err, video) => {
-      if (err) {
-        console.log(err);
-      } else {
-        res.json(video);
-      }
+  Video.findById(id, (err, video) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json(video);
     }
-  );
+  });
 });
 
 //Create Video
@@ -108,17 +104,13 @@ app.get("/playlists", (req, res) => {
 //Read Single playlist
 app.get("/playlist/:id", (req, res) => {
   let id = req.params.id;
-  Playlist.find({
-      _id: id
-    },
-    (err, playlist) => {
-      if (err) {
-        console.log(err);
-      } else {
-        res.json(playlist);
-      }
+  Playlist.findById(id, (err, playlist) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json(playlist);
     }
-  );
+  });
 });
 
 //Create Playlist
@@ -157,6 +149,32 @@ app.delete("/playlist/:id", (req, res) => {
     }
   );
 });
+
+//Shuffle Playlist
+app.get("/shuffle/:id", (req, res) => {
+  let id = req.params.id;
+  Playlist.findById(id, (err, playlist) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(shuffleArray(playlist.videos));
+    }
+  });
+});
+
+// Using Durstenfeld shuffle algorithm
+function shuffleArray(array) {
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+  return array;
+}
+
+//Shuffle Videos Array
+// shuffleArray(videos);
 
 //Start Server
 app.listen(3000, () => {
