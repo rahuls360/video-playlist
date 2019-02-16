@@ -2,20 +2,29 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const dotenv = require('dotenv');
+
+//setup dotenv package
+dotenv.config();
 
 const Video = require("./models/video");
 
-mongoose.connect("mongodb://admin:123rahul@ds137605.mlab.com:37605/video-playlist", {
+//connect to db
+mongoose.connect(process.env.MONGO_DB, {
   useNewUrlParser: true
 });
 var db = mongoose.connection;
 
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+//setup bodyparser
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+);
 
 //home
 app.get("/", (req, res) => {
+  console.log(process.env)
   res.send("Working!");
 });
 
@@ -34,14 +43,16 @@ app.get("/videos", (req, res) => {
 app.get("/video/:id", (req, res) => {
   let id = req.params.id;
   Video.find({
-    _id: id
-  }, (err, video) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.json(video);
+      _id: id
+    },
+    (err, video) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json(video);
+      }
     }
-  });
+  );
 });
 
 //Create Video
@@ -49,19 +60,21 @@ app.post("/video/new", (req, res) => {
   let video = req.body;
 
   Video.create({
-    title: video.title,
-    thumbnail: video.thumbnail,
-    url: video.url,
-    duration: video.duration
-  }, function (err, createdVideo) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("Video Added");
-      res.send("Video Added");
+      title: video.title,
+      thumbnail: video.thumbnail,
+      url: video.url,
+      duration: video.duration
+    },
+    function (err, createdVideo) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Video Added");
+        res.send("Video Added");
+      }
     }
-  })
-})
+  );
+});
 
 //Delete Video
 app.delete("/video/:id", (req, res) => {
@@ -69,7 +82,7 @@ app.delete("/video/:id", (req, res) => {
   Video.deleteOne({
       _id: id
     },
-    (err) => {
+    err => {
       if (err) {
         console.log(err);
       } else {
@@ -77,7 +90,7 @@ app.delete("/video/:id", (req, res) => {
         res.send("Video Deleted");
       }
     }
-  )
+  );
 });
 
 //Start Server
