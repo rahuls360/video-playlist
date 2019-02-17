@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const dotenv = require('dotenv');
+const dotenv = require("dotenv");
 
 //setup dotenv package
 dotenv.config();
@@ -25,7 +25,7 @@ app.use(
 
 //home
 app.get("/", (req, res) => {
-  console.log(process.env)
+  console.log(process.env);
   res.send("Working!");
 });
 
@@ -33,7 +33,8 @@ app.get("/", (req, res) => {
 app.get("/videos", (req, res) => {
   Video.find({}, (err, videos) => {
     if (err) {
-      console.log(err);
+      console.log(err.message);
+      res.send({ error: err.message });
     } else {
       res.json(videos);
     }
@@ -45,7 +46,8 @@ app.get("/video/:id", (req, res) => {
   let id = req.params.id;
   Video.findById(id, (err, video) => {
     if (err) {
-      console.log(err);
+      console.log(err.message);
+      res.send({ error: "Video id not found" });
     } else {
       res.json(video);
     }
@@ -56,15 +58,17 @@ app.get("/video/:id", (req, res) => {
 app.post("/video/new", (req, res) => {
   let video = req.body;
 
-  Video.create({
+  Video.create(
+    {
       title: video.title,
       thumbnail: video.thumbnail,
       url: video.url,
       duration: video.duration
     },
-    function (err, createdVideo) {
+    function(err, createdVideo) {
       if (err) {
-        console.log(err);
+        console.log(err.message);
+        res.send({ error: err.message });
       } else {
         console.log("Video Added");
         res.send("Video Added");
@@ -76,12 +80,14 @@ app.post("/video/new", (req, res) => {
 //Delete Video
 app.delete("/video/:id", (req, res) => {
   let id = req.params.id;
-  Video.deleteOne({
+  Video.deleteOne(
+    {
       _id: id
     },
     err => {
       if (err) {
-        console.log(err);
+        console.log(err.message);
+        res.send({ error: err.message });
       } else {
         console.log("Delete Successful");
         res.send("Video Deleted");
@@ -94,7 +100,8 @@ app.delete("/video/:id", (req, res) => {
 app.get("/playlists", (req, res) => {
   Playlist.find({}, (err, playlists) => {
     if (err) {
-      console.log(err);
+      console.log(err.message);
+      res.send({ error: err.message });
     } else {
       res.json(playlists);
     }
@@ -106,7 +113,8 @@ app.get("/playlist/:id", (req, res) => {
   let id = req.params.id;
   Playlist.findById(id, (err, playlist) => {
     if (err) {
-      console.log(err);
+      console.log(err.message);
+      res.send({ error: "Playlist id not found" });
     } else {
       res.json(playlist);
     }
@@ -117,14 +125,16 @@ app.get("/playlist/:id", (req, res) => {
 app.post("/playlist/new", (req, res) => {
   let playlist = req.body;
 
-  Playlist.create({
+  Playlist.create(
+    {
       title: playlist.title,
       videos: playlist.videos,
       URL: playlist.URL
     },
-    function (err, createdPlaylist) {
+    function(err, createdPlaylist) {
       if (err) {
-        console.log(err);
+        console.log(err.message);
+        res.send({ error: err.message });
       } else {
         console.log("Playlist created");
         res.send("Playlist created");
@@ -136,12 +146,14 @@ app.post("/playlist/new", (req, res) => {
 //Delete Playlist
 app.delete("/playlist/:id", (req, res) => {
   let id = req.params.id;
-  Playlist.deleteOne({
+  Playlist.deleteOne(
+    {
       _id: id
     },
     err => {
       if (err) {
-        console.log(err);
+        console.log(err.message);
+        res.send({ error: err.message });
       } else {
         console.log("Delete Successful");
         res.send("Playlist Deleted");
@@ -155,7 +167,8 @@ app.get("/shuffle/:id", (req, res) => {
   let id = req.params.id;
   Playlist.findById(id, (err, playlist) => {
     if (err) {
-      console.log(err);
+      console.log(err.message);
+      res.send({ error: "Playlist id not found" });
     } else {
       res.send(shuffleArray(playlist.videos));
     }
