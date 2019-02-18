@@ -50,3 +50,9 @@ https://video-playlist-rahuls360.herokuapp.com
 ### Delete a Playlist
 
 /playlist/:id [DELETE]
+
+&nbsp;
+
+### Shuffle Playlist Videos
+
+/shuffle/:id [GET]
